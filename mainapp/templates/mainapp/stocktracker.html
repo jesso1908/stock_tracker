@@ -1,0 +1,96 @@
+{% extends 'mainapp/basic.html' %}
+{% load static %}
+
+StockTracker
+
+{% block css %}
+<style>
+  .red {
+    color: red;
+  }
+
+  .green {
+    color: green;
+  }
+
+  .table-container {
+    overflow-x: scroll;
+  }
+</style>
+{% endblock %}
+{% block body %}
+<div class="container">
+  <h1>Live Stock Tracker</h1>
+  <table class ='table-container'></table>
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Stock</th>
+          <th scope="col">Open</th>
+          <th scope="col">High</th>
+          <th scope="col">Low</th>
+          <th scope="col">Close</th>
+          <th scope="col">Previous Close</th>
+          <th scope="col">Volume</th>
+          <th scope="col">Change</th>
+
+          
+
+
+        </tr>
+      </thead>
+      <tbody>
+        {% for key,value in data.items %}
+
+            <tr>
+              <th scope="row">{{forloop.counter}}</th>
+              <td>{{key}}</td>
+              <td>{{value.1}}</td>
+              <td>{{value.2}}</td>
+              <td>{{value.3}}</td>
+              <td id="{{key}}_price">{{value.4}}</td>
+              <td id ="{{key}}_prevprice">{{value.12}}</td>
+              <td>{{value.5}}</td>
+              <td id ="{{key}}_change"><script type="text/javascript">
+                var change = document.getElementById("{{key}}_price").innerHTML - 
+                document.getElementById("{{key}}_prevprice").innerHTML
+                change = Number((change).toFixed(7));
+                document.getElementById("{{key}}_change").innerHTML = change;
+              </script></td>
+            </tr>
+          
+        {% endfor %}
+       
+      </tbody>
+    </table>
+  </table>
+</div>
+{{room_name|json_script:"room-name"}}
+<script type="text/javascript">
+  const roomName = JSON.parse(document.getElementById('room-name').textContent);
+  var queryString = window.location.search;
+  queryString = queryString.substring(1);
+  console.log(queryString);
+  const stockSocket = new WebSocket
+  ('ws://' +window.location.host+'/ws/stock/'+ roomName +'/'+'?'+queryString);
+</script>
+  <!-- <div class="mt-5">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="d-flex justify-content-between align-items-center breaking-news ">
+          <div class="d-flex flex-row flex-grow-1 flex-fill justify-content-center bg-danger py-2 text-white px-1 news">
+            <span class="d-flex align-items-center">Selected Stocks</span></div>
+
+          <marquee class="news-scroll" behavior="scroll" direction="left">
+            <h4 class="name-scroll">{{selectedstock}}</h4>
+
+
+          </marquee>
+        </div>
+      </div>
+    </div>
+  </div> -->
+{% endblock %}
+
+ 
